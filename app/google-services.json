@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "124397814413",
+    "project_id": "wevote-ef82b",
+    "storage_bucket": "wevote-ef82b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124397814413:android:963b255121097a5a0998c4",
+        "android_client_info": {
+          "package_name": "com.example.wevote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124397814413-83l5dfkt1lh05rv4jv988ql5reou1cl0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH0mAVA0fa6aHcPCG7F4HWxW8KNHQsN5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124397814413-83l5dfkt1lh05rv4jv988ql5reou1cl0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

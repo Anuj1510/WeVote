@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/candidate_nav"
+    app:startDestination="@id/candidateFragment">
+
+    <fragment
+        android:id="@+id/candidateFragment"
+        android:name="com.example.wevote.fragments.CandidateFragment"
+        android:label="fragment_candidate"
+        tools:layout="@layout/fragment_candidate" >
+        <action
+            android:id="@+id/action_candidateFragment_to_candidateDetailsFragment"
+            app:destination="@id/candidateDetailsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/candidateDetailsFragment"
+        android:name="com.example.wevote.fragments.CandidateDetailsFragment"
+        android:label="fragment_candidate_details"
+        tools:layout="@layout/fragment_candidate_details" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_candidateDetailsFragment_to_candidateFragment"
+            app:destination="@id/candidateFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+</navigation>
