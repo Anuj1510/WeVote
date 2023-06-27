@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import com.example.wevote.R
-import com.example.wevote.TesterActivity
 import com.example.wevote.activities.VoterActivity
 import com.example.wevote.activities.VoterActivity.Companion.log_out
 import com.example.wevote.databinding.FragmentLoginBinding
