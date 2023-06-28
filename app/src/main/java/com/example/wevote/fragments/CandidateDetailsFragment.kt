@@ -3,7 +3,9 @@ package com.example.wevote.fragments
 
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -21,10 +23,15 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.wevote.R
+import com.example.wevote.activities.VoterActivity
+import com.example.wevote.activities.VoterActivity.Companion.VoteCount
 import com.example.wevote.activities.VoterActivity.Companion.detail_log_out
 import com.example.wevote.activities.candidates
 import com.example.wevote.data.Candidate
 import com.example.wevote.databinding.FragmentCandidateDetailsBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.concurrent.Executor
+import kotlin.system.exitProcess
 
 class CandidateDetailsFragment : Fragment() {
     private lateinit var binding:FragmentCandidateDetailsBinding
@@ -33,6 +40,12 @@ class CandidateDetailsFragment : Fragment() {
     private val CAMERA_REQUEST_CODE = 2
     lateinit var imageUri:Uri
     private var image:String? = null
+    private lateinit var sharedPreferences: SharedPreferences
+    private var voteCount: Int = 0
+
+    companion object {
+        private const val PREF_VOTE_COUNT = "pref_vote_count"
+    }
 
 
     override fun onCreateView(
@@ -51,6 +64,7 @@ class CandidateDetailsFragment : Fragment() {
 
         detail_log_out = true
         packageManager = requireContext().packageManager
+        sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
         if(detail_log_out){
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner){
@@ -77,6 +91,8 @@ class CandidateDetailsFragment : Fragment() {
             }
         }
 
+        voteCount = sharedPreferences.getInt(PREF_VOTE_COUNT, 0)
+
         binding.IVcamera.setOnClickListener {
 
             if(ContextCompat.checkSelfPermission(activity!!,android.Manifest.permission.CAMERA) ==
@@ -92,14 +108,31 @@ class CandidateDetailsFragment : Fragment() {
 
         }
 
+        binding.VoteToCandidate.setOnClickListener {
+            if(VoteCount == 0){
+                    val builder = MaterialAlertDialogBuilder(activity!!)
+                    builder.setMessage("Do you want Give Vote to this Candidate")
+                        .setPositiveButton("Yes") { _, _ ->
+                                Toast.makeText(
+                                    activity,
+                                    "Thank You for giving your precious vote to us",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
-
-//        binding.VoteToCandidate.setOnClickListener {
-//            Toast.makeText(activity,"$image",Toast.LENGTH_LONG).show()
-//        }
+                            VoteCount++
+                        }
+                        .setNegativeButton("No") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+            }else{
+                Toast.makeText(activity,"You have already given the vote",Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
+    // for camera
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,

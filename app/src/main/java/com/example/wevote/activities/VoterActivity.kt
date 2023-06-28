@@ -57,6 +57,7 @@ class VoterActivity : AppCompatActivity() {
     companion object{
          var log_out:Boolean = false
         var detail_log_out:Boolean = false
+        var VoteCount:Int = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
