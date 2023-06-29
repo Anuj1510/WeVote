@@ -58,7 +58,7 @@ class LoginFragment : Fragment() {
 
             override fun onAuthenticationSucceeded(result: androidx.biometric.BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                Toast.makeText(activity,"FingerPrint Authentication Successful",Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity,"Biometric Authentication Successful",Toast.LENGTH_SHORT).show()
                 Biometric = true
             }
         })
@@ -132,7 +132,7 @@ class LoginFragment : Fragment() {
             }
 
         }else{
-            Toast.makeText(activity,"First do FingerPrint Authentication",Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity,"First do Biometric Authentication",Toast.LENGTH_SHORT).show()
         }
     }
 

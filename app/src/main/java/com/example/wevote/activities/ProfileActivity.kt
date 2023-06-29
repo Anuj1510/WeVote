@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.example.wevote.R
 import com.example.wevote.data.User
 import com.example.wevote.databinding.ActivityProfileBinding
+import com.example.wevote.fragments.CandidateDetailsFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
@@ -65,6 +66,9 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         binding.Exitbtn.setOnClickListener {
+            val editor = CandidateDetailsFragment.sharedPreferences.edit()
+            editor.remove(CandidateDetailsFragment.PREF_VOTE_COUNT)
+            editor.apply()
             finishAffinity()
         }
 

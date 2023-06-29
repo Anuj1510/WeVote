@@ -40,11 +40,13 @@ class CandidateDetailsFragment : Fragment() {
     private val CAMERA_REQUEST_CODE = 2
     lateinit var imageUri:Uri
     private var image:String? = null
-    private lateinit var sharedPreferences: SharedPreferences
-    private var voteCount: Int = 0
 
     companion object {
-        private const val PREF_VOTE_COUNT = "pref_vote_count"
+        lateinit var sharedPreferences: SharedPreferences
+        var voteCount: Int = 0
+        var setImage:Boolean = false
+        const val PREF_VOTE_COUNT = "pref_vote_count"
+        const val PREF_SET_IMAGE = "pref_set_image"
     }
 
 
@@ -65,6 +67,8 @@ class CandidateDetailsFragment : Fragment() {
         detail_log_out = true
         packageManager = requireContext().packageManager
         sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        voteCount = sharedPreferences.getInt(PREF_VOTE_COUNT, 0)
+        setImage = sharedPreferences.getBoolean(PREF_SET_IMAGE, false)
 
         if(detail_log_out){
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner){
@@ -91,8 +95,6 @@ class CandidateDetailsFragment : Fragment() {
             }
         }
 
-        voteCount = sharedPreferences.getInt(PREF_VOTE_COUNT, 0)
-
         binding.IVcamera.setOnClickListener {
 
             if(ContextCompat.checkSelfPermission(activity!!,android.Manifest.permission.CAMERA) ==
@@ -109,7 +111,7 @@ class CandidateDetailsFragment : Fragment() {
         }
 
         binding.VoteToCandidate.setOnClickListener {
-            if(VoteCount == 0){
+            if(voteCount == 0 && setImage){
                     val builder = MaterialAlertDialogBuilder(activity!!)
                     builder.setMessage("Do you want Give Vote to this Candidate")
                         .setPositiveButton("Yes") { _, _ ->
@@ -119,14 +121,15 @@ class CandidateDetailsFragment : Fragment() {
                                     Toast.LENGTH_SHORT
                                 ).show()
 
-                            VoteCount++
+                            voteCount++
+                            sharedPreferences.edit().putInt(PREF_VOTE_COUNT, voteCount).apply()
                         }
                         .setNegativeButton("No") { dialog, _ ->
                             dialog.dismiss()
                         }
                         .show()
             }else{
-                Toast.makeText(activity,"You have already given the vote",Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity,"Either you have not click your photo or you have already given the vote",Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -155,6 +158,8 @@ class CandidateDetailsFragment : Fragment() {
             if(requestCode == CAMERA_REQUEST_CODE){
                 val thumbNail:Bitmap = data!!.extras!!.get("data") as Bitmap
                 binding.VoterImage.setImageBitmap(thumbNail)
+                setImage = true
+                sharedPreferences.edit().putBoolean(PREF_SET_IMAGE, setImage).apply()
             }
         }
     }

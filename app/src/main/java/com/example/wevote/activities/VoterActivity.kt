@@ -8,6 +8,7 @@ import android.view.MenuItem
 import com.example.wevote.R
 import com.example.wevote.data.Candidate
 import com.example.wevote.databinding.ActivityVoterBinding
+import com.example.wevote.fragments.CandidateDetailsFragment
 import com.google.firebase.auth.FirebaseAuth
 
 var candidates = mutableListOf(
@@ -80,6 +81,9 @@ class VoterActivity : AppCompatActivity() {
 
             R.id.logout -> {
                 log_out = true
+                val editor = CandidateDetailsFragment.sharedPreferences.edit()
+                editor.remove(CandidateDetailsFragment.PREF_VOTE_COUNT)
+                editor.apply()
                 mAuth.signOut()
                 val intent = Intent(this,LoginRegisterActivity::class.java)
                 startActivity(intent)
