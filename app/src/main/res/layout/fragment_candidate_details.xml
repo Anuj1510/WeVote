@@ -137,6 +137,40 @@
             app:layout_constraintStart_toEndOf="@+id/TVcamera"
             app:layout_constraintTop_toBottomOf="@+id/VoterImage" />
 
+        <ImageView
+            android:id="@+id/AadharCardPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="35dp"
+            app:layout_constraintTop_toBottomOf="@+id/TVcamera"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:srcCompat="@tools:sample/avatars"
+            />
+
+        <TextView
+            android:id="@+id/TVcameraAadhar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Upload your Aadhar Card"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/AadharCardPhoto" />
+
+        <ImageView
+            android:id="@+id/IVcameraAadhar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/camera"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.06"
+            app:layout_constraintStart_toEndOf="@+id/TVcameraAadhar"
+            app:layout_constraintTop_toBottomOf="@+id/AadharCardPhoto" />
+
         <Button
             android:id="@+id/Vote_to_candidate"
             android:layout_width="match_parent"
@@ -145,7 +179,7 @@
             android:backgroundTint="#046A38"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/IVcamera"
+            app:layout_constraintTop_toBottomOf="@id/IVcameraAadhar"
             android:layout_marginTop="30dp"
             />
 

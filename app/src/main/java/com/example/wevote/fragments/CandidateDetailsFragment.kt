@@ -2,14 +2,12 @@ package com.example.wevote.fragments
 
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
@@ -24,14 +22,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.Navigation
-import com.bumptech.glide.Glide
 import com.example.wevote.R
-import com.example.wevote.activities.VoterActivity
 import com.example.wevote.activities.VoterActivity.Companion.VoteCount
 import com.example.wevote.activities.VoterActivity.Companion.detail_log_out
 import com.example.wevote.activities.candidates
 import com.example.wevote.data.Candidate
-import com.example.wevote.data.User
 import com.example.wevote.data.Voter
 import com.example.wevote.databinding.FragmentCandidateDetailsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -41,20 +36,17 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
-import java.util.concurrent.Executor
-import kotlin.system.exitProcess
 
 class CandidateDetailsFragment : Fragment() {
     private lateinit var binding:FragmentCandidateDetailsBinding
     private lateinit var packageManager: PackageManager
     private val CAMERA_PERMISSION_CODE = 1
     private val CAMERA_REQUEST_CODE = 2
-    lateinit var imageUri:Uri
-    private var image:String? = null
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
     private lateinit var storageRef: FirebaseStorage
     private var uri: Uri? = null
+    private var Aaadharuri:Uri? = null
     var party_name:String? = null
 
     companion object {
@@ -103,6 +95,19 @@ class CandidateDetailsFragment : Fragment() {
 
         }
 
+        // for aadharcard
+        val gallery = registerForActivityResult(ActivityResultContracts.GetContent(),
+            ActivityResultCallback {
+                binding.AadharCardPhoto.setImageURI(it)
+                if (it != null) {
+                    Aaadharuri = it
+                }
+            })
+
+        // for aadharcard
+        binding.IVcameraAadhar.setOnClickListener {
+            gallery.launch("image/*")
+        }
 
 
         candidate?.let {
@@ -118,7 +123,7 @@ class CandidateDetailsFragment : Fragment() {
         binding.IVcamera.setOnClickListener {
 
             if(ContextCompat.checkSelfPermission(activity!!,android.Manifest.permission.CAMERA) ==
-                    PackageManager.PERMISSION_GRANTED){
+                PackageManager.PERMISSION_GRANTED){
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 startActivityForResult(intent,CAMERA_REQUEST_CODE)
             }else{
@@ -130,35 +135,22 @@ class CandidateDetailsFragment : Fragment() {
 
         }
 
-//        val gallery = registerForActivityResult(ActivityResultContracts.GetContent(), ActivityResultCallback {
-//                binding.IVcamera.setImageURI(it)
-//                if (it != null) {
-//                    uri = it
-//                }
-//            })
-
         binding.VoteToCandidate.setOnClickListener {
-            if(voteCount == 0 && setImage){
-                    val builder = MaterialAlertDialogBuilder(activity!!)
-                    builder.setMessage("Do you want Give Vote to this Candidate")
-                        .setPositiveButton("Yes") { _, _ ->
+            if(setImage && VoteCount == 0){
+                val builder = MaterialAlertDialogBuilder(activity!!)
+                builder.setMessage("Do you want Give Vote to this Candidate")
+                    .setPositiveButton("Yes") { _, _ ->
 
-                            val partyName = party_name
-                            addUsertoDataBase(partyName,mAuth.currentUser!!.uid)
+                        val partyName = party_name
+                        addUsertoDataBase(partyName,mAuth.currentUser!!.uid)
 
-                                Toast.makeText(
-                                    activity,
-                                    "Thank You for giving your precious vote to us",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                            voteCount++
-                            sharedPreferences.edit().putInt(PREF_VOTE_COUNT, voteCount).apply()
-                        }
-                        .setNegativeButton("No") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .show()
+                        voteCount++
+                        sharedPreferences.edit().putInt(PREF_VOTE_COUNT, voteCount).apply()
+                    }
+                    .setNegativeButton("No") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
             }else{
                 Toast.makeText(activity,"Either you have not click your photo or you have already given the vote",Toast.LENGTH_SHORT).show()
             }
@@ -168,8 +160,19 @@ class CandidateDetailsFragment : Fragment() {
 
     private fun addUsertoDataBase(partyName: String?, uid: String) {
         if(uri == null){
-            Toast.makeText(activity,"No image",Toast.LENGTH_SHORT).show()
-        }else{
+            VoteCount = 0
+            Toast.makeText(activity,"Please click your image",Toast.LENGTH_SHORT).show()
+        }
+        else if(Aaadharuri == null){
+            VoteCount = 0
+            Toast.makeText(activity,"Please upload your Aadhar Card photo",Toast.LENGTH_SHORT).show()
+        }
+        else{
+            Toast.makeText(
+                activity,
+                "Thank You for giving your precious vote to us",
+                Toast.LENGTH_SHORT
+            ).show()
             storageRef.getReference("voterImages").child(System.currentTimeMillis().toString())
                 .putFile(uri!!)
                 .addOnSuccessListener {task->
