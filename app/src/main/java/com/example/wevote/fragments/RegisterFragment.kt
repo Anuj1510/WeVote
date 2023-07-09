@@ -60,7 +60,7 @@ class RegisterFragment : Fragment() {
             val firstName = binding.edFirstNameRegister.text.toString()
             val lastName = binding.edLastNameRegister.text.toString()
             val email = binding.edEmailRegister.text.toString()
-            val password = binding.edPasswordRegister.text.toString()
+            val password = binding.edPasswordRegister.editText?.text.toString()
             val phone = binding.edPhoneNumberRegister.text.toString()
             val phonenumber = phone.toLong()
 
@@ -98,10 +98,10 @@ class RegisterFragment : Fragment() {
                                         // Sign in success, update UI with the sig6ned-in user's information
                                         mAuth.currentUser?.sendEmailVerification() // email verification
                                             ?.addOnSuccessListener {
-                                                Toast.makeText(activity,"Please verify your email",Toast.LENGTH_LONG).show()
+                                                Toast.makeText(activity,"Please verify your email",Toast.LENGTH_SHORT).show()
                                             }
                                             ?.addOnFailureListener {
-                                                Toast.makeText(activity,"Some error occurred",Toast.LENGTH_LONG).show()
+                                                Toast.makeText(activity,"Some error occurred",Toast.LENGTH_SHORT).show()
                                             }
                                         addUserToDatabase(email, mAuth.currentUser?.uid!!,firstName,lastName,phonenumber)
                                         view?.let { it1 -> Navigation.findNavController(it1).navigate(R.id.action_registerFragment_to_loginFragment) }

@@ -102,6 +102,9 @@ class CandidateDetailsFragment : Fragment() {
                 if (it != null) {
                     Aaadharuri = it
                 }
+                else{
+                    Toast.makeText(activity,"Image size is big",Toast.LENGTH_SHORT).show()
+                }
             })
 
         // for aadharcard
@@ -143,9 +146,6 @@ class CandidateDetailsFragment : Fragment() {
 
                         val partyName = party_name
                         addUsertoDataBase(partyName,mAuth.currentUser!!.uid)
-
-                        voteCount++
-                        sharedPreferences.edit().putInt(PREF_VOTE_COUNT, voteCount).apply()
                     }
                     .setNegativeButton("No") { dialog, _ ->
                         dialog.dismiss()
@@ -168,6 +168,8 @@ class CandidateDetailsFragment : Fragment() {
             Toast.makeText(activity,"Please upload your Aadhar Card photo",Toast.LENGTH_SHORT).show()
         }
         else{
+            VoteCount++
+            sharedPreferences.edit().putInt(PREF_VOTE_COUNT, voteCount).apply()
             Toast.makeText(
                 activity,
                 "Thank You for giving your precious vote to us",

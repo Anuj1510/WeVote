@@ -121,18 +121,24 @@
                 android:layout_marginTop="10dp"
                 />
 
-            <EditText
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edPasswordRegister"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 app:layout_constraintStart_toStartOf="@id/guidelineLoginLeft"
                 app:layout_constraintEnd_toEndOf="@id/guidelineLoginRight"
                 app:layout_constraintTop_toBottomOf="@+id/edPhoneNumberRegister"
-                style="@style/editText"
+                app:passwordToggleEnabled="true"
                 android:hint="Password"
-                android:inputType="textPassword"
                 android:layout_marginTop="10dp"
-                />
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="@style/editText"
+                    android:inputType="textPassword"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
                 android:id="@+id/IVProfileImage"

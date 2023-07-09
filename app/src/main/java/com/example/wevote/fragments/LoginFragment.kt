@@ -74,7 +74,7 @@ class LoginFragment : Fragment() {
         binding.buttonLoginLogin.setOnClickListener {
 
             val email = binding.edEmailLogin.text.toString()
-            val password = binding.edPasswordLogin.text.toString()
+            val password = binding.edPasswordLogin.editText?.text.toString()
 
 
             if(email.isEmpty() || password.isEmpty()){
