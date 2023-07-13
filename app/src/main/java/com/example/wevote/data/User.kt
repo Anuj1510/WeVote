@@ -6,7 +6,7 @@ class User {
     var lastName: String? = null
     var email: String? = null
     var PhoneNumber:Long? = null
-    var UserImage: Map<String, String>? = null
+    var UserImage: String? = null
     var uid: String? = null
 
     constructor(){}
@@ -17,7 +17,7 @@ class User {
         email:String?,
         PhoneNumber: Long,
         uid:String?,
-        UserImage: Map<String, String>
+        UserImage: String
     ){
         this.firstName = firstName
         this.lastName = lastName

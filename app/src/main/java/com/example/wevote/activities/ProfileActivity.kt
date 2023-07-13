@@ -25,7 +25,6 @@ class ProfileActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         userList = ArrayList()
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
         mdbRef = FirebaseDatabase.getInstance().getReference()
 
 
@@ -46,6 +45,12 @@ class ProfileActivity : AppCompatActivity() {
                     binding.VoterEmail.text = "Email :- ${userList[0].email}"
                     binding.VoterName.text = "Name :- ${userList[0].firstName} ${userList[0].lastName}"
                     binding.VoterPhone.text = "Phone no :- ${userList[0].PhoneNumber}"
+                    if (!isDestroyed) {
+                        val url = userList[0].UserImage.toString()
+                        Glide.with(this@ProfileActivity)
+                            .load(url)
+                            .into(binding.profileImage)
+                    }
                 }
 
 
@@ -56,14 +61,6 @@ class ProfileActivity : AppCompatActivity() {
             }
 
         })
-
-        mdbRef = FirebaseDatabase.getInstance().getReference("user").child(userId)
-
-        mdbRef.child("userImage").get().addOnSuccessListener {
-            val url = it.child("url").value.toString()
-
-            Glide.with(this).load(url).into(binding.profileImage)
-        }
 
         binding.Exitbtn.setOnClickListener {
             val editor = CandidateDetailsFragment.sharedPreferences.edit()

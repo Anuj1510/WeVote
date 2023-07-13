@@ -128,19 +128,21 @@ class RegisterFragment : Fragment() {
         PhoneNumber: Long
     ) {
 
+        var imageRefs:String
+
         storageRef.getReference("images").child(System.currentTimeMillis().toString())
             .putFile(uri!!)
             .addOnSuccessListener {task->
 
-                task.metadata!!.reference!!.downloadUrl
-                    .addOnSuccessListener {
-                        val mapImage = mapOf(
-                            "url" to it.toString()
-                        )
-                        mDbRef = FirebaseDatabase.getInstance().getReference()
+                task.storage.downloadUrl.addOnSuccessListener {downloadUrl ->
+                    imageRefs = downloadUrl.toString()
 
-                        mDbRef.child("user").child(uid).setValue(User(firstName,lastName,email,PhoneNumber, uid,mapImage))
-                    }
+                    mDbRef = FirebaseDatabase.getInstance().getReference()
+
+                    mDbRef.child("user").child(uid).setValue(User(firstName,lastName,email,PhoneNumber, uid,imageRefs))
+
+                }
+
 
             }
 

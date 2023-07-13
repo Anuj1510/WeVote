@@ -22,17 +22,18 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.example.wevote.R
 import com.example.wevote.activities.VoterActivity.Companion.VoteCount
 import com.example.wevote.activities.VoterActivity.Companion.detail_log_out
 import com.example.wevote.activities.candidates
 import com.example.wevote.data.Candidate
+import com.example.wevote.data.User
 import com.example.wevote.data.Voter
 import com.example.wevote.databinding.FragmentCandidateDetailsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
@@ -45,9 +46,13 @@ class CandidateDetailsFragment : Fragment() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
     private lateinit var storageRef: FirebaseStorage
-    private var uri: Uri? = null
+    private var ImageClickuri: Uri? = null
     private var Aaadharuri:Uri? = null
     var party_name:String? = null
+    var voter_email:String?=null
+    var voter_name:String? = null
+    var voter_profile_image:String? = null
+    private lateinit var userList : ArrayList<User>
 
     companion object {
         lateinit var sharedPreferences: SharedPreferences
@@ -74,6 +79,8 @@ class CandidateDetailsFragment : Fragment() {
 
         mAuth = FirebaseAuth.getInstance()
         storageRef = FirebaseStorage.getInstance()
+        userList = ArrayList()
+
 
         detail_log_out = true
         packageManager = requireContext().packageManager
@@ -123,6 +130,37 @@ class CandidateDetailsFragment : Fragment() {
             }
         }
 
+        mDbRef = FirebaseDatabase.getInstance().getReference()
+        mDbRef.child("user").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                //currentUser = snapshot.getValue(User::class.java)
+
+                userList.clear()
+                for(postSnapshot in snapshot.children){
+                    val currentUser = postSnapshot.getValue(User::class.java)
+                    if(mAuth.currentUser?.uid == currentUser?.uid){
+                        userList.add(currentUser!!)
+                    }
+                }
+
+
+                if(userList.isNotEmpty()){
+                   voter_email = userList[0].email
+                    voter_name = userList[0].firstName + " " + userList[0].lastName
+                    voter_profile_image = userList[0].UserImage.toString()
+                }
+
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+
+
         binding.IVcamera.setOnClickListener {
 
             if(ContextCompat.checkSelfPermission(activity!!,android.Manifest.permission.CAMERA) ==
@@ -139,7 +177,7 @@ class CandidateDetailsFragment : Fragment() {
         }
 
         binding.VoteToCandidate.setOnClickListener {
-            if(setImage && VoteCount == 0){
+            if(setImage && voteCount == 0){
                 val builder = MaterialAlertDialogBuilder(activity!!)
                 builder.setMessage("Do you want Give Vote to this Candidate")
                     .setPositiveButton("Yes") { _, _ ->
@@ -159,39 +197,67 @@ class CandidateDetailsFragment : Fragment() {
     }
 
     private fun addUsertoDataBase(partyName: String?, uid: String) {
-        if(uri == null){
-            VoteCount = 0
+        if(ImageClickuri == null){
+            voteCount = 0
             Toast.makeText(activity,"Please click your image",Toast.LENGTH_SHORT).show()
         }
         else if(Aaadharuri == null){
-            VoteCount = 0
+            voteCount = 0
             Toast.makeText(activity,"Please upload your Aadhar Card photo",Toast.LENGTH_SHORT).show()
         }
-        else{
-            VoteCount++
+        else {
+            voteCount++
             sharedPreferences.edit().putInt(PREF_VOTE_COUNT, voteCount).apply()
             Toast.makeText(
                 activity,
                 "Thank You for giving your precious vote to us",
                 Toast.LENGTH_SHORT
             ).show()
-            storageRef.getReference("voterImages").child(System.currentTimeMillis().toString())
-                .putFile(uri!!)
-                .addOnSuccessListener {task->
+            //mDbRef = FirebaseDatabase.getInstance().getReference("user").child(userId)
+                    val uri1 = ImageClickuri
+                    val uri2 = Aaadharuri
+                    val imageRefs = mutableListOf<String>()
+                    for (imageUri in listOf(uri1, uri2)) {
+                        if (imageUri != null) {
+                            storageRef.getReference("voterImages")
+                                .child(System.currentTimeMillis().toString())
+                                .putFile(imageUri)
+                                .addOnSuccessListener { taskSnapshot ->
+                                    // Get the download URL for the uploaded image
+                                    taskSnapshot.storage.downloadUrl.addOnSuccessListener { downloadUrl ->
+                                        imageRefs.add(downloadUrl.toString())
 
-                    task.metadata!!.reference!!.downloadUrl
-                        .addOnSuccessListener {
-                            val mapImage = mapOf(
-                                "url" to it.toString()
-                            )
-                            mDbRef = FirebaseDatabase.getInstance().getReference()
+                                        // Check if all images are uploaded
+                                        if (imageRefs.size == 2) {
+                                            // Create the data object with the download URLs and additional fields
+                                            val data = Voter(uid,voter_name, imageRefs[1], voter_email, imageRefs[0], partyName,voter_profile_image)
 
-                            mDbRef.child("Voter").child(uid).setValue(Voter( uid,mapImage,partyName))
+                                            // Upload the data to Firebase Realtime Database
+                                            val databaseRef =
+                                                FirebaseDatabase.getInstance().getReference()
+                                            databaseRef.child("Voter").child(uid).setValue(data)
+                                                .addOnSuccessListener {
+                                                    // Data uploaded successfully
+                                                    Toast.makeText(
+                                                        activity,
+                                                        "Data uploaded successfully",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    // Handle the failure
+                                                    Toast.makeText(
+                                                        activity,
+                                                        "Failed to upload data: ${e.message}",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                        }
+                                    }
+                                }
                         }
-
-                }
+                    }
         }
-
     }
 
 
@@ -217,7 +283,7 @@ class CandidateDetailsFragment : Fragment() {
         if(resultCode == Activity.RESULT_OK){
             if(requestCode == CAMERA_REQUEST_CODE){
                 val imageBitmap: Bitmap? = data?.extras?.get("data") as? Bitmap
-                uri = imageBitmap?.let { saveImageToStorage(it) }
+                ImageClickuri = imageBitmap?.let { saveImageToStorage(it) }
                 val thumbNail:Bitmap = data!!.extras!!.get("data") as Bitmap
                 binding.VoterImage.setImageBitmap(thumbNail)
                 setImage = true
