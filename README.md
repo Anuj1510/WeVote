@@ -14,3 +14,6 @@ An online voting app where an user can vote safely and securely.It contains emai
 <img src="https://github.com/Anuj1510/ShopNow/assets/110629170/30f0da5d-7154-42ba-9434-44f185a44978" width="200" height="500">
 <img src="https://github.com/Anuj1510/ShopNow/assets/110629170/6d7b414b-9801-43ad-a29f-a4dada479525" width="200" height="500">
 <img src="https://github.com/Anuj1510/ShopNow/assets/110629170/e4cd4be8-12c8-4e29-bd51-542d55b89cd5" width="200" height="500">
+
+# How this app can be useful in terms of online Voting?
+we can use this app for online voting.I live in utter pradesh and suppose during the time of voting if I will be in my hostel which is in Agartala then it will be impossible for me to give vote.At such type of situations this app comes in role.It is safe and secure with a proper Biometric Authentication service.By doing little changes in this app we can also use this app as an online attendance app.
