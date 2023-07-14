@@ -1,5 +1,5 @@
 # WeVote
-An online voting app where an user can vote safely and securely.It contains email verification,biometric authentication(fingerprint/face lock).Voter cannot login without email verification and biometric authentication.While giving vote to any party the voter has to upload his aadhar car photo and also click his photo at the same time,without this he/she cannot give a vote.
+An online voting app where an user can vote safely and securely.It contains email verification,biometric authentication(fingerprint/face lock).Voter cannot login without email verification and biometric authentication.During the time of registration, voter has to upload his/her photo and while giving vote to any party the voter has to upload his aadhar car photo and also click his photo at the same time,without this he/she cannot give a vote.
 # ScreenShots
 <img src="https://github.com/Anuj1510/ShopNow/assets/110629170/4170d7c8-5732-46b1-af83-7fb2de10462c" width="200" height="500">
 <img src="https://github.com/Anuj1510/ShopNow/assets/110629170/a014a3c0-5ada-4c88-9617-247ff7f09f7b" width="200" height="500">
